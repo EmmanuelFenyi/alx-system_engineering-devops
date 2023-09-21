@@ -1,117 +1,75 @@
-<h1><strong>0x0F. Load balancer<\strong><\h1>
-<img src="https://s3.amazonaws.com/intranet-projects-files/holbertonschool-sysadmin_devops/174/load-balancing.png">
+# 0x0F. Load balancer
 
-## Load balancer
-Ever wonder how Facebook, Linkedin, Twitter and other web giants are handling such huge amounts of traffic? They don’t have just one server, but tens of thousands of them. In order to achieve this, web traffic needs to be distributed to these servers, and that is the role of a load-balancer.
+<p align="center">
+  <img src="https://s3.amazonaws.com/intranet-projects-files/holbertonschool-sysadmin_devops/275/qfdked8.png"/>
+</p>
 
-### Readme:
-* [Load-balancing](https://www.thegeekstuff.com/2016/01/load-balancer-intro/)
-* [Load-balancing algorithms](https://devcentral.f5.com/s/articles/intro-to-load-balancing-for-developers-ndash-the-algorithms)
+## Resource
 
-## Background Context
+<details>
+<summary>Load balancer</summary><br>
+<ul>
+  <li>Ever wonder how Facebook, Linkedin, Twitter and other web giants are handling such huge amounts of traffic? They don’t have just one server, but tens of thousands of them. In order to achieve this, web traffic needs to be distributed to these servers, and that is the role of a load-balancer.
 
-You have been given 2 additional servers:
+  <p align="center">
+   <img src="https://s3.amazonaws.com/alx-intranet.hbtn.io/uploads/medias/2020/9/6cefdd14b2f8c36789cba132bd5a10d42d88a177.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARDDGGGOUSBVO6H7D%2F20220111%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220111T181845Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=792a403303cb0d1faf98b4886f11e22013fa58b709f00d84029ac5877beb6aab" />
+  </p>
+  <ul>
+      <li><a href="https://www.thegeekstuff.com/2016/01/load-balancer-intro/">Load-balancing</a></li>
+      <li><a href="https://devcentral.f5.com/s/articles/intro-to-load-balancing-for-developers-ndash-the-algorithms">Load-balancing algorithms</a></li>
+  </ul>
+  </li>
+</ul>
+</details>
 
-* gc-[STUDENT_ID]-web-02-XXXXXXXXXX
-* gc-[STUDENT_ID]-lb-01-XXXXXXXXXX
+<details>
+<summary>Web stack debugging</summary><br>
+<ul>
+  <li>Intro
+  <ul>Debugging usually takes a big chunk of a software engineer’s time. The art of debugging is tough and it takes years, even decades to master, and that is why seasoned software engineers are the best at it… experience. They have seen lots of broken code, buggy systems, weird edge cases and race conditions.</ul>
 
-Let’s improve our web stack so that there is [redundancy](https://en.wikipedia.org/wiki/Redundancy_%28engineering%29) for our web servers. This will allow us to be able to accept more traffic by doubling the number of web servers, and to make our infrastructure more reliable. If one web server fails, we will still have a second one to handle requests.
+  <p align="center">
+   <img src="https://s3.amazonaws.com/alx-intranet.hbtn.io/uploads/medias/2020/9/45dffb0b1da8dc2ce47e340d7f88b05652c0f486.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARDDGGGOUSBVO6H7D%2F20220105%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220105T050302Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=d499fde872931932fc76dedd39b4298797482fd9b7ca1fc09f0a885ea8aa1cae" />
+  </p>
+  </li>
+</ul>
 
-For this project, you will need to write Bash scripts to automate your work. All scripts must be designed to configure a brand new Ubuntu server to match the task requirements.
+<details>
+<summary>Test and verify your assumptions</summary><br>
+<a href='https://postimages.org/' target='_blank'><img src='https://i.postimg.cc/rFMtkCt8/image.png' border='0' alt='image'/></a>
+</details>
 
-## Resources:books:
-Read or watch:
-* [Introduction to load-balancing and HAproxy](https://intranet.hbtn.io/rltoken/ngIXarEyu8jZwOL3Y30PLQ)
-* [HTTP header](https://intranet.hbtn.io/rltoken/v32JmcDrSiOnFBfqzXvs_Q)
-* [Debian/Ubuntu HAProxy packages](https://intranet.hbtn.io/rltoken/BXGrW_6ocecWaOJb7OK_WA)
+<ul>
+  <li>Debugging is fun
+  <ul>Debugging can be frustrating, but it will definitely be part of your job, it requires experience and methodology to become good at it. The good news is that bugs are never going away, and the more experienced you become, trickier bugs will be assigned to you! Good luck 😃</ul>
 
----
-## Your servers
----
-| Name |	Username |	IP |	State |        |          |         |
-|------|-----------------|---------|----------|--------|----------|---------|
-| 1574-web-01 |	ubuntu |  35.227.35.75 |	running |	Soft reboot |	Hard reboot |	Ask a new server |
-| 1574-web-02 |	ubuntu |	100.24.37.33 | running |	Soft reboot |	Hard reboot |	Ask a new server |
-| 1574-lb-01 |	ubuntu |	3.91.150.218 |	running |	Soft reboot |	Hard reboot |	Ask a new server |
----
+  <p align="center">
+   <img src="https://s3.amazonaws.com/alx-intranet.hbtn.io/uploads/medias/2020/9/bae58c9f066a9668001ef4b4c39778407439d2f9.gif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARDDGGGOUSBVO6H7D%2F20220105%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220105T050302Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=67d4c1d736b92bef534ab94427ff3bef2c8ad4b498cafb512fbe6f6ddefec9ba" />
+  </p>
+  </li>
+</ul>
 
-### [0. Double the number of webservers](./0-custom_http_response-header)
-* In this first task you need to configure web-02 to be identical to web-01. Fortunately, you built a Bash script during your [web server project](https://github.com/mecomonteshbtn/holberton-system_engineering-devops/tree/master/0x0C-web_server), and they’ll now come in handy to easily configure web-02. Remember, always try to automate your work!
+</details>
 
-Since we’re placing our web servers behind a load balancer for this project, we want to add a custom Nginx response header. The goal here is to be able to track which web server is answering our HTTP requests, to understand and track the way a load balancer works. More in the coming tasks.
+- [Introduction to load-balancing and HAproxy](https://www.digitalocean.com/community/tutorials/an-introduction-to-haproxy-and-load-balancing-concepts)
+- [HAProxy Configuration Basics: Load Balance Your Servers](https://www.haproxy.com/blog/haproxy-configuration-basics-load-balance-your-servers/)
+- [The Four Essential Sections of an HAProxy Configuration](https://www.haproxy.com/blog/the-four-essential-sections-of-an-haproxy-configuration/)
+- [HTTP Header](https://www.techopedia.com/definition/27178/http-header)
+- [Debian/Ubuntu HAProxy packages](https://haproxy.debian.net/)
 
-Requirements:
-* Configure Nginx so that its HTTP response contains a custom header (on web-01 and web-02)
-* The name of the custom HTTP header must be X-Served-By
-* The value of the custom HTTP header must be the hostname of the server Nginx is running on
-* Write 0-custom_http_response-header so that it configures a brand new Ubuntu machine to the requirements asked in this task
-* Ignore SC2154 for shellcheck
+## Tasks
 
-Example:
-```
-sylvain@ubuntu$ ./transfer 0-custom_http_response-header 34.75.91.155 ubuntu ~/.ssh/holberton
-0-custom_http_response-header                                100% 1399     1.4KB/s   00:00 
-sylvain@ubuntu$ ssh ubuntu@35.227.35.75 -i ~/.ssh/holberton
-ubuntu@1574-web-01$ ./0-custom_http_response-header
-ubuntu@localhost$ logoout
-...
-sylvain@ubuntu$ curl -sI 35.227.35.75 | grep X-Served-By
-X-Served-By: 1574-web-01
-sylvain@ubuntu$ curl -sI 100.24.37.33 | grep X-Served-By
-X-Served-By: 1574-web-02
-sylvain@ubuntu$ curl -sI 3.91.150.218 | grep X-Served-By
-X-Served-By: 1574-lb-01
-sylvain@ubuntu$
-```
-If your server’s hostnames are not properly configured ([STUDENT_ID]-web-01 and [STUDENT_ID]-web-02.), follow this [tutorial](https://aws.amazon.com/premiumsupport/knowledge-center/linux-static-hostname/).
+<details>
+<summary><a href="./0-custom_http_response_header">0. Double the number of webservers</a></summary><br>
+<a href='https://postimages.org/' target='_blank'><img src='https://i.postimg.cc/prMGd5GF/image.png' border='0' alt='image'/></a>
+</details>
 
-### [1. Install your load balancer](./1-install_load_balancer)
-* Install and configure HAproxy on your lb-01 server.
+<details>
+<summary><a href="./1-install_load_balancer">1. Install your load balancer</a></summary><br>
+<a href='https://postimages.org/' target='_blank'><img src='https://i.postimg.cc/4dBWZ476/image.png' border='0' alt='image'/></a>
+</details>
 
-Requirements:
-* Configure HAproxy with version equal or greater than 1.5 so that it send traffic to web-01 and web-02
-* Distribute requests using a roundrobin algorithm
-* Make sure that HAproxy can be managed via an init script
-* Make sure that your servers are configured with the right hostnames: [STUDENT_ID]-web-01 and [STUDENT_ID]-web-02. If not, follow this [tutorial](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-hostname.html).
-* For your answer file, write a Bash script that configures a new Ubuntu machine to respect above requirements
-
-Example:
-```
-sylvain@ubuntu$ curl -Is 54.210.47.110
-HTTP/1.1 200 OK
-Server: nginx/1.4.6 (Ubuntu)
-Date: Mon, 27 Feb 2017 06:12:17 GMT
-Content-Type: text/html
-Content-Length: 30
-Last-Modified: Tue, 21 Feb 2017 07:21:32 GMT
-Connection: keep-alive
-ETag: "58abea7c-1e"
-X-Served-By: 03-web-01
-Accept-Ranges: bytes
-
-sylvain@ubuntu$ curl -Is 54.210.47.110
-HTTP/1.1 200 OK
-Server: nginx/1.4.6 (Ubuntu)
-Date: Mon, 27 Feb 2017 06:12:19 GMT
-Content-Type: text/html
-Content-Length: 612
-Last-Modified: Tue, 04 Mar 2014 11:46:45 GMT
-Connection: keep-alive
-ETag: "5315bd25-264"
-X-Served-By: 03-web-02
-Accept-Ranges: bytes
-
-sylvain@ubuntu$
-```
-
-### [2. Add a custom HTTP header with Puppet](./2-puppet_custom_http_response-header.pp)
-* Just as in task #0, we’d like you to automate the task of creating a custom HTTP header response, but with Puppet.
-
-* The name of the custom HTTP header must be X-Served-By
-* The value of the custom HTTP header must be the hostname of the server Nginx is running on
-* Write 2-puppet_custom_http_response-header.pp so that it configures a brand new Ubuntu machine to the requirements asked in this task
-
----
-
-## Author
-* **Robinson Montes** - [mecomonteshbtn](https://github.com/mecomonteshbtn)
+<details>
+<summary><a href="./2-puppet_custom_http_response_header.pp">2. Add a custom HTTP header with Puppet</a></summary><br>
+<a href='https://postimages.org/' target='_blank'><img src='https://i.postimg.cc/sD2G5kZY/image.png' border='0' alt='image'/></a>
+</details>
