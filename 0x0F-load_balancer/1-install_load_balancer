@@ -1,63 +1,16 @@
 #!/usr/bin/env bash
-# A script that installs and configures HAProxy on your web servers.
-function update() {
-echo "Updating apt-get..."
-  apt-get -y update &> /dev/null
-  echo "apt-get has been updated."
-}
+# bash script that installs HAProxy & makes configurations to meet the following requirements:
 
-function install() {
-  if ! command -v "$1" &> /dev/null; then
-    update
-    echo "Installing $1..."
-    apt-get -y install "$1" &> /dev/null
-    echo "$1 has been installed."
-  else
-    echo "$1 is already installed."
-  fi
-}
-
-# Install HAProxy
-install haproxy
-
-# Give the user ownership to HAProxy files
-if [[ ! -d /etc/haproxy ]]; then
-  mkdir -p /etc/haproxy
-fi
-chown -R "$USER":"$USER" /etc/haproxy
-chmod -R 755 /etc/haproxy
-
-# Configure HAProxy
-if [[ ! -f /etc/haproxy/haproxy.cfg.bak ]]; then
-  cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
-fi
-
-cat <<EOF > /etc/haproxy/haproxy.cfg
-global
-  daemon
-  maxconn 256
-
-defaults
-  mode http
-  timeout connect 5000ms
-  timeout client 50000ms
-  timeout server 50000ms
-
-frontend achrafelkhnissi.tech
-  bind *:80
-  default_backend servers
-
-backend servers
-  balance roundrobin
-  server 233018-web-01 54.196.40.132:80 check
-  server 233018-web-02 52.23.213.94:80 check
-EOF
-
-# Enable HAProxy
-if [[ ! -f /etc/default/haproxy ]]; then
-  touch /etc/default/haproxy
-fi
-chown -R "$USER":"$USER" /etc/default/haproxy
-chmod -R 755 /etc/default/haproxy
+apt-get -y install software-properties-common
+add-apt-repository ppa:vbernat/haproxy-1.8
+apt-get update
+apt-get -y install haproxy
 echo "ENABLED=1" >> /etc/default/haproxy
-service haproxy start
+printf %s "listen 5517-web
+    bind *:80
+    mode http
+    balance roundrobin
+    server 5517-web-01 3.80.117.30:80 check
+    server 5517-web-02 54.227.173.17:80 check
+" >> /etc/haproxy/haproxy.cfg
+sudo service haproxy restart
