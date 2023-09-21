@@ -1,62 +1,63 @@
 #!/usr/bin/env bash
-# install load balancer
-
-# colors
-blue='\e[1;34m'
-brown='\e[0;33m'
-green='\e[1;32m'
-reset='\033[0m'
-
-echo -e "${blue}Updating and doing some minor checks...${reset}\n"
-
-function install() {
-	command -v "$1" &> /dev/null
-
-	#shellcheck disable=SC2181
-	if [ $? -ne 0 ]; then
-		echo -e "	Installing: ${brown}$1${reset}\n"
-		sudo apt-get update -y -qq && \
-			sudo apt-get install -y "$1" -qq
-		echo -e "\n"
-	else
-		echo -e "	${green}${1} is already installed.${reset}\n"
-	fi
+# A script that installs and configures HAProxy on your web servers.
+function update() {
+echo "Updating apt-get..."
+  apt-get -y update &> /dev/null
+  echo "apt-get has been updated."
 }
 
-install haproxy #install haproxy
+function install() {
+  if ! command -v "$1" &> /dev/null; then
+    update
+    echo "Installing $1..."
+    apt-get -y install "$1" &> /dev/null
+    echo "$1 has been installed."
+  else
+    echo "$1 is already installed."
+  fi
+}
 
-echo -e "\n${blue}Setting up some minor stuff.${reset}\n"
+# Install HAProxy
+install haproxy
 
-# backup default server config file
-sudo cp /etc/haproxy/haproxy.cfg haproxy_default.backup
+# Give the user ownership to HAProxy files
+if [[ ! -d /etc/haproxy ]]; then
+  mkdir -p /etc/haproxy
+fi
+chown -R "$USER":"$USER" /etc/haproxy
+chmod -R 755 /etc/haproxy
 
-server_config=\
-"
+# Configure HAProxy
+if [[ ! -f /etc/haproxy/haproxy.cfg.bak ]]; then
+  cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
+fi
+
+cat <<EOF > /etc/haproxy/haproxy.cfg
+global
+  daemon
+  maxconn 256
+
 defaults
   mode http
-  timeout client 15s
-  timeout connect 10s
-  timeout server 15s
-  timeout http-request 10s
+  timeout connect 5000ms
+  timeout client 50000ms
+  timeout server 50000ms
 
-frontend th3gr00t-tech-frontend
-    bind *:80
-    default_backend th3gr00t-tech-backend
+frontend achrafelkhnissi.tech
+  bind *:80
+  default_backend servers
 
-backend th3gr00t-tech-backend
-    balance roundrobin
-    server 453-web-01 35.243.128.200:80 check
-    server 453-web-02 3.239.120.96:80 check
-"
+backend servers
+  balance roundrobin
+  server 233018-web-01 54.196.40.132:80 check
+  server 233018-web-02 52.23.213.94:80 check
+EOF
 
-# shellcheck disable=SC2154
-echo "$server_config" | sudo dd status=none of=/etc/haproxy/haproxy.cfg
-
-# enable haproxy to be started by init script
-echo "ENABLED=1" | sudo dd status=none of=/etc/default/haproxy
-
-if [ "$(pgrep -c haproxy)" -le 0 ]; then
-	sudo service haproxy start
-else
-	sudo service haproxy restart
+# Enable HAProxy
+if [[ ! -f /etc/default/haproxy ]]; then
+  touch /etc/default/haproxy
 fi
+chown -R "$USER":"$USER" /etc/default/haproxy
+chmod -R 755 /etc/default/haproxy
+echo "ENABLED=1" >> /etc/default/haproxy
+service haproxy start
