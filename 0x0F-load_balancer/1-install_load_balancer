@@ -1,16 +1,21 @@
-#!/usr/bin/env bash
-# bash script that installs HAProxy & makes configurations to meet the following requirements:
+#!/usr/bin/env bash                                                                                                                  
+# Install and configure HAproxy on load balancing lb-01 server                                                                       
 
-apt-get -y install software-properties-common
-add-apt-repository ppa:vbernat/haproxy-1.8
-apt-get update
-apt-get -y install haproxy
+sudo apt-get -y install software-properties-common
+sudo add-apt-repository -y ppa:vbernat/haproxy-1.7
+sudo apt-get update
+sudo apt-get -y install haproxy
+
 echo "ENABLED=1" >> /etc/default/haproxy
-printf %s "listen 5517-web
-    bind *:80
-    mode http
-    balance roundrobin
-    server 5517-web-01 3.80.117.30:80 check
-    server 5517-web-02 54.227.173.17:80 check
-" >> /etc/haproxy/haproxy.cfg
+
+sudo mv /etc/haproxy/haproxy.cfg{,.original}
+new="listen appname                                                                                                                  
+    bind 0.0.0.0:80                                                                                                                  
+    mode http                                                                                                                        
+    stats enable                                                                                                                     
+    option httpclose                                                                                                                 
+    option forwardfor                                                                                                                
+    server 214-web-01 142.44.167.237:80 check                                                                                        
+    server 214-web-02 144.217.246.206:80 check"
+echo "$new" > /etc/haproxy/haproxy.cfg
 sudo service haproxy restart

@@ -1,41 +1,48 @@
 #!/usr/bin/env bash
-# bash script to install nginx web server & make the following configurations:
+# Create custom 404 page with string, Ceci n'est pas une page.
+
+#!/usr/bin/env bash
+# Create custom 404 page with string, Ceci n'est pas une page.
 
 apt-get update
-apt-get install -y nginx
+apt-get -y install nginx
 
-mkdir /etc/nginx/html
+school="Holberton School"
+new="server {
+        listen 80 default_server;
+        listen [::]:80 default_server ipv6only=on;
 
-touch /etc/nginx/html/index.html
+        root /usr/share/nginx/html;
+        index index.html index.htm;
 
+        # Make site accessible from http://localhost/
+        server_name localhost;
 
-echo "Holberton School" > /etc/nginx/html/index.html
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                # try_files $uri $uri/ =404;
+        }
 
-# Create custom 404 error page
-echo "<!DOCTYPE html>
-<html>
-<head>
-  <title>404 Not Found</title>
-</head>
-<body>
-  <h1>404 Not Found</h1>
-  <p>Ceci n'est pas une page</p>
-</body>
-</html>" | sudo tee /var/www/html/404.html >/dev/null
+        location /redirect_me {
+                 return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+        }
 
-printf %s "server {
-     listen      80 default_server;
-     listen      [::]:80 default_server;
-     root        /etc/nginx/html;
-     index       index.html index.htm;
+        error_page 404 /404.html;
+        #error_page 404 /404.html;
+        location = /404.html {
+                 root /usr/share/nginx/html;
+                 internal;
+        }
+}"
+err404="Ceci n'est pas une page"
 
-     error_page 404 /404.html;
+#From task 1-install_nginx_web_server
+echo "$school" > /usr/share/nginx/html/index.html
+#From task 3-redirection
+echo "$new" > /etc/nginx/sites-available/default
+#From task 4-not_found_page_404
+echo "$err404" > /usr/share/nginx/html/404.html
 
-     location /404 {
-        root /etc/nginx/html;
-        internal;
-     }
-}
-" > /etc/nginx/sites-available/default
-
-service nginx restart
+service nginx stop
+service nginx start

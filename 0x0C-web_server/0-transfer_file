@@ -1,16 +1,8 @@
 #!/usr/bin/env bash
-#transfer files to a server
-
-if [$# -lt 4]; then
-    echo "Usage: $0 PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
-    exit 1
+# Transfer a file from client to server
+if [ "$#" -le 3 ]; then
+    echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
+else
+    user=$3"@"$2":~/."
+    scp -oStrictHostKeyChecking=no -i$4 $1 "$user"
 fi
-
-# set params
-file="$1"
-host="$2"
-username="$3"
-path_to_ssh_key="$4"
-
-# transfer the data
-scp -o "StrictHostKeyChecking no" -i "$path_to_ssh_key" "$file" "$username@$host:~/"
