@@ -15,7 +15,7 @@ new="listen appname
     stats enable                                                                                                                     
     option httpclose                                                                                                                 
     option forwardfor                                                                                                                
-    server 214-web-01 142.44.167.237:80 check                                                                                        
-    server 214-web-02 144.217.246.206:80 check"
+    server 95218-web-01 100.26.174.177:80 check                                                                                        
+    server 95218-web-02 144.217.246.206:80 check"
 echo "$new" > /etc/haproxy/haproxy.cfg
 sudo service haproxy restart
