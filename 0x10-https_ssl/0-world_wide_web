@@ -1,56 +1,16 @@
 #!/usr/bin/env bash
+# Takes a subdomain and a domain and returns information about the subdomain
 
-# Function to display information about a specific subdomain
-display_subdomain_info() {
-    local domain="$1"
-    local subdomain="$2"
-
-    # Retrieve DNS information for the specified subdomain
-    local dns_info=$(dig +short "$subdomain.$domain" | awk '{ print $1 }')
-
-    # Determine the record type
-    local record_type=$(echo "$dns_info" | awk 'NR==1 { print toupper($1) }')
-
-    # Determine the destination
-    local destination=$(echo "$dns_info" | awk 'NR>1 { print $1 }')
-
-    # Display information about the subdomain
-    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+print_info () {
+    dig "$1" | grep -A1 'ANSWER SECTION:' | sed -r "s/$1./$2/g" | awk -F" " ' NR==2 { print "The subdomain " $1 " is a " $4 " record and points to " $5 }'
 }
 
-# Function to display information about default subdomains
-display_default_subdomains_info() {
-    local domain="$1"
-
-    # Define default subdomains
-    local default_subdomains=("www" "lb-01" "web-01" "web-02")
-
-    # Loop through default subdomains and display information
-    for subdomain in "${default_subdomains[@]}"; do
-        display_subdomain_info "$domain" "$subdomain"
-    done
-}
-
-# Main function
-main() {
-    local domain="$1"
-    local subdomain="$2"
-
-    # Display information for default subdomains if no specific subdomain is provided
-    if [ -z "$subdomain" ]; then
-        display_default_subdomains_info "$domain"
-    else
-        # Display information for the specified subdomain
-        display_subdomain_info "$domain" "$subdomain"
-    fi
-}
-
-# Check if both domain and subdomain parameters are provided
-if [ $# -lt 1 ]; then
-    echo "Usage: $0 <domain> [<subdomain>]"
-    exit 1
+if [ "$#" -eq 2 ]
+then
+    print_info "$2.$1" "$2"
+else
+    print_info "www.$1" "www"
+    print_info "lb-01.$1" "lb-01"
+    print_info "web-01.$1" "web-01"
+    print_info "web-02.$1" "web-02"
 fi
-
-# Call the main function with provided arguments
-main "$@"
-
