@@ -32,7 +32,7 @@ Requirements, your post must cover:
 - Application server
 - Database
 
-Click [here](http://---) to read my article.
+Click [here](https://medium.com/@kwamefemma/demystifying-the-journey-of-a-url-what-happens-when-you-type-https-www-google-com-0085c448af86?source=friends_link&sk=22677cf1b81625d8dd8b735dffe6829e) to read my article.
 
 ### Task 1
 Add a schema to your blog post illustrating the flow of the request created when you type https://www.google.com in your browser and press Enter.\
@@ -46,4 +46,17 @@ The diagram should show:
 - that the application server generates the web page
 - that the application server request data from the database
 
-I hosted the diagram image [here](https://imgbox.com/kkWMGEjm)
+I hosted the diagram image [here](https://imgbox.com/YK6R3VoL)
+
+### Task 2
+Folks on the Internet have been trying to put together a comprehensive answer to the question. Help them by submitting a pull request. Paste the link in your answer file.
+
+https://github.com/alex/what-happens-when#the-g-key-is-pressed
+
+Requirements:
+
+The pull request must bring meaningful value (not a typo correction or style improvement)
+Share the pull request URL in your answer file and in the field below
+Please, remember that these blogs must be written in English to further your technical ability in a variety of settings.
+
+click [here](https://github.com/alex/what-happens-when/pull/1742) to see my pull request
