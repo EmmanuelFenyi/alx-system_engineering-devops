@@ -1,50 +1,60 @@
 #!/usr/bin/python3
-""" Module for a function that queries the Reddit API recursively."""
 
+"""
+Module: subreddit_utils.py
+
+This module contains functions related to querying the Reddit API recursively and counting words.
+"""
 
 import requests
+from collections import Counter
 
 
-def count_words(subreddit, word_list, after='', word_dict={}):
-    """ A function that queries the Reddit API parses the title of
-    all hot articles, and prints a sorted count of given keywords
-    (case-insensitive, delimited by spaces.
-    Javascript should count as javascript, but java should not).
-    If no posts match or the subreddit is invalid, it prints nothing.
+def count_words(subreddit, word_list, after=None, word_count=None):
     """
+    Recursively queries the Reddit API, parses the title of all hot articles,
+    and prints a sorted count of given keywords.
 
-    if not word_dict:
-        for word in word_list:
-            if word.lower() not in word_dict:
-                word_dict[word.lower()] = 0
+    Args:
+        subreddit (str): The name of the subreddit.
+        word_list (list): A list of keywords to count.
+        after (str): A token indicating the post to start after (default is None).
+        word_count (Counter): A Counter object to store the word counts (default is None).
 
-    if after is None:
-        wordict = sorted(word_dict.items(), key=lambda x: (-x[1], x[0]))
-        for word in wordict:
-            if word[1]:
-                print('{}: {}'.format(word[0], word[1]))
-        return None
+    Returns:
+        None
+    """
+    if word_count is None:
+        word_count = Counter()
 
-    url = 'https://www.reddit.com/r/{}/hot/.json'.format(subreddit)
-    header = {'user-agent': 'redquery'}
-    parameters = {'limit': 100, 'after': after}
-    response = requests.get(url, headers=header, params=parameters,
-                            allow_redirects=False)
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    headers = {'User-Agent': 'Custom User Agent'}
+    params = {'limit': 100, 'after': after}
+    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+    if response.status_code == 200:
+        data = response.json()
+        if 'data' in data and 'children' in data['data']:
+            for post in data['data']['children']:
+                title = post['data']['title'].lower()
+                for word in word_list:
+                    if title.count(word.lower()) > 0:
+                        word_count[word.lower()] += title.count(word.lower())
+            after = data['data']['after']
+            if after:
+                return count_words(subreddit, word_list, after, word_count)
+            else:
+                sorted_word_count = sorted(word_count.items(), key=lambda x: (-x[1], x[0]))
+                for word, count in sorted_word_count:
+                    print("{}: {}".format(word, count))
+    else:
+        return
 
-    if response.status_code != 200:
-        return None
 
-    try:
-        hot = response.json()['data']['children']
-        aft = response.json()['data']['after']
-        for post in hot:
-            title = post['data']['title']
-            lower = [word.lower() for word in title.split(' ')]
+if __name__ == "__main__":
+    import sys
 
-            for word in word_dict.keys():
-                word_dict[word] += lower.count(word)
-
-    except Exception:
-        return None
-
-    count_words(subreddit, word_list, aft, word_dict)
+    if len(sys.argv) < 3:
+        print("Usage: {} <subreddit> <list of keywords>".format(sys.argv[0]))
+        print("Ex: {} programming 'python java javascript'".format(sys.argv[0]))
+    else:
+        count_words(sys.argv[1], sys.argv[2].split())
