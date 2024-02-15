@@ -19,7 +19,7 @@ def number_of_subscribers(subreddit):
     Returns:
         int: The number of subscribers of the subreddit. Returns 0 if the subreddit is invalid.
     """
-    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
+    url = f"https://www.reddit.com/r/{subreddit}/about.json"
     headers = {'User-Agent': 'Custom User Agent'}
     response = requests.get(url, headers=headers, allow_redirects=False)
     if response.status_code == 200:
@@ -33,4 +33,4 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Please pass an argument for the subreddit to search.")
     else:
-        print("{:d}".format(number_of_subscribers(sys.argv[1])))
+        print(number_of_subscribers(sys.argv[1]))
